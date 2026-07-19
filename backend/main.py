@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 import contextlib
 import os
 
@@ -37,4 +37,8 @@ def read_root():
 
 # Mount the frontend directory
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+
+@app.get("/admin")
+async def serve_admin():
+    return FileResponse(os.path.join(frontend_path, "admin.html"))
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
