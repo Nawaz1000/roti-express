@@ -54,6 +54,10 @@ async def create_order(order_req: OrderCreate, db=Depends(get_database)):
             "price": price,
             "quantity": item.quantity
         })
+        
+    # Add delivery fee
+    if total_amount > 0 and total_amount < 100:
+        total_amount += 20.0
 
     # 3. Create Order Document
     order_code = generate_order_code()

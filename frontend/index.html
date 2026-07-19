@@ -254,21 +254,36 @@
         }
 
         function calculateTotal() {
-            let total = 0;
+            let itemTotal = 0;
             let totalItems = 0;
             
             catalog.forEach(item => {
-                total += item.price * cart[item.id];
+                itemTotal += item.price * cart[item.id];
                 totalItems += cart[item.id];
             });
+
+            let deliveryFee = 0;
+            if (itemTotal > 0 && itemTotal < 100) {
+                deliveryFee = 20;
+            }
+            let finalTotal = itemTotal + deliveryFee;
             
-            document.getElementById('total_amount').innerText = `₹${total}`;
+            let totalHtml = `₹${finalTotal}`;
+            if (deliveryFee > 0) {
+                totalHtml = `<div class="text-right"><div class="text-sm text-gray-400 font-normal">Subtotal: ₹${itemTotal} + Delivery: ₹20</div>₹${finalTotal}</div>`;
+            } else if (itemTotal >= 100) {
+                totalHtml = `<div class="text-right"><div class="text-sm text-green-400 font-normal">Free Delivery!</div>₹${finalTotal}</div>`;
+            } else {
+                totalHtml = `₹0`;
+            }
+            
+            document.getElementById('total_amount').innerHTML = totalHtml;
             
             const btn = document.getElementById('submit-btn');
             if (totalItems > 0) {
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                btn.innerText = `Confirm Order (₹${total})`;
+                btn.innerText = `Confirm Order (₹${finalTotal})`;
             } else {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');
