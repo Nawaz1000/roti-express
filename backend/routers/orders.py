@@ -84,9 +84,9 @@ async def create_order(order_req: OrderCreate, db=Depends(get_database)):
         "items": items_list,
         "total_amount": total_amount,
         "delivery_slot": None,
-        "payment_method": order_req.payment_method,
-        "payment_status": PaymentStatus.PENDING,
-        "order_status": OrderStatus.ONGOING,
+        "payment_method": order_req.payment_method.value,
+        "payment_status": PaymentStatus.PENDING.value,
+        "order_status": OrderStatus.ONGOING.value,
         "payment": {
             "upi_ref_id": None,
             "razorpay_order_id": None,
