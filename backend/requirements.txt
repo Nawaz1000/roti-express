@@ -6,7 +6,8 @@ pydantic-settings
 python-dotenv
 python-multipart
 PyJWT
-passlib[bcrypt]
+passlib
+bcrypt==3.2.2
 razorpay
 qrcode[pil]
 httpx
