@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: roti-express-api
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: MONGODB_URI
+        sync: false
+      - key: DB_NAME
+        value: "roti_express"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PAYMENT_MODE
+        value: "razorpay"
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
