@@ -323,10 +323,10 @@
                     document.getElementById('cod-amount').innerText = `₹${data.total_amount}`;
 
                     // Setup WA Confirm button with order details
-                    const waNum = "919000000000"; 
+                    const waNum = "918779672253"; 
                     
                     let cartSummary = itemsToOrder.map(i => `${i.quantity}x ${i.name}`).join(', ');
-                    let waTextString = `Hi! I'd like to confirm my order *${data.order_code}*.\n\n*Items:* ${cartSummary}\n*Total:* ₹${data.total_amount}\n*Address:* ${payload.customer.address}`;
+                    let waTextString = `Hi! I'd like to confirm my order *${data.order_code}*.\n\n*Items:* ${cartSummary}\n*Total:* ₹${data.total_amount}\n*Payment Type:* ${payload.payment_method}\n*Address:* ${payload.customer.address}`;
                     
                     const waText = encodeURIComponent(waTextString);
                     document.getElementById('wa-confirm-btn').href = `https://wa.me/${waNum}?text=${waText}`;
