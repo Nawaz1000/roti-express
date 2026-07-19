@@ -223,9 +223,16 @@
                             }
                         }
 
+                        let itemsDisplay = '';
+                        if (o.items && o.items.length > 0) {
+                            itemsDisplay = o.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+                        } else if (o.quantity) {
+                            itemsDisplay = `${o.quantity} Rotis (Legacy)`;
+                        }
+
                         html += `
                             <tr class="hover:bg-gray-50">
-                                <td class="p-4"><span class="font-bold text-sm">${o.order_code}</span><br><span class="text-xs text-gray-500">${o.quantity} Rotis</span></td>
+                                <td class="p-4"><span class="font-bold text-sm">${o.order_code}</span><br><span class="text-xs text-gray-500">${itemsDisplay}</span></td>
                                 <td class="p-4 text-sm font-medium">${o.customer.name}<br><span class="text-xs text-gray-500">${o.customer.phone}</span></td>
                                 <td class="p-4 text-sm">${slotTime}<br><span class="text-xs text-gray-500 truncate max-w-xs block">${o.customer.address}</span></td>
                                 <td class="p-4 font-bold text-gray-700">₹${o.total_amount}</td>

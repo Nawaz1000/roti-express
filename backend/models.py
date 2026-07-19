@@ -22,6 +22,11 @@ class Customer(BaseModel):
     phone: str
     address: str
 
+class OrderItem(BaseModel):
+    name: str
+    price: float
+    quantity: int = Field(gt=0)
+
 class PaymentDetails(BaseModel):
     upi_ref_id: Optional[str] = None
     razorpay_order_id: Optional[str] = None
@@ -30,7 +35,7 @@ class PaymentDetails(BaseModel):
 
 class OrderCreate(BaseModel):
     customer: Customer
-    quantity: int = Field(gt=0)
+    items: List[OrderItem]
     delivery_slot: Optional[datetime] = None
     payment_method: PaymentMethod
     notes: Optional[str] = ""
@@ -39,8 +44,7 @@ class Order(BaseModel):
     id: str = Field(alias="_id")
     order_code: str
     customer: Customer
-    quantity: int
-    price_per_roti: float
+    items: List[OrderItem]
     total_amount: float
     delivery_slot: Optional[datetime] = None
     payment_method: PaymentMethod

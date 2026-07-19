@@ -27,9 +27,36 @@ async def create_order(order_req: OrderCreate, db=Depends(get_database)):
     max_rotis = app_settings.get("max_rotis_per_slot", 50)
 
 
+    # Validate items and calculate total
+    if not order_req.items:
+        raise HTTPException(status_code=400, detail="Order must contain at least one item")
+        
+    total_amount = 0.0
+    items_list = []
+    
+    catalog = {
+        "Wheat Roti": 10.0,
+        "Chaawal Roti": 25.0,
+        "Jaawari Roti": 25.0,
+        "Baajri Roti": 25.0
+    }
+    
+    for item in order_req.items:
+        if item.name not in catalog:
+            raise HTTPException(status_code=400, detail=f"Invalid item: {item.name}")
+        
+        # Enforce catalog prices
+        price = catalog[item.name]
+        total_amount += price * item.quantity
+        
+        items_list.append({
+            "name": item.name,
+            "price": price,
+            "quantity": item.quantity
+        })
+
     # 3. Create Order Document
     order_code = generate_order_code()
-    total_amount = order_req.quantity * price_per_roti
 
     # Save customer (upsert based on phone)
     customer_doc = {
@@ -54,8 +81,7 @@ async def create_order(order_req: OrderCreate, db=Depends(get_database)):
             "phone": order_req.customer.phone,
             "address": order_req.customer.address
         },
-        "quantity": order_req.quantity,
-        "price_per_roti": price_per_roti,
+        "items": items_list,
         "total_amount": total_amount,
         "delivery_slot": None,
         "payment_method": order_req.payment_method,
