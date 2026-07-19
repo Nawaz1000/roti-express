@@ -89,6 +89,13 @@ async def mark_order_paid(order_code: str, db=Depends(get_database), admin=Depen
     result["_id"] = str(result["_id"])
     return result
 
+@router.delete("/orders/{order_code}")
+async def delete_order(order_code: str, db=Depends(get_database), admin=Depends(get_current_admin)):
+    result = await db.orders.delete_one({"order_code": order_code})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"message": "Order deleted"}
+
 @router.get("/stats")
 async def get_stats(db=Depends(get_database), admin=Depends(get_current_admin)):
     today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)

@@ -205,8 +205,12 @@
                     html = `<tr><td colspan="6" class="p-8 text-center text-gray-500">No orders found.</td></tr>`;
                 } else {
                     orders.forEach(o => {
-                        const d = new Date(o.created_at);
-                        const slotTime = d.toLocaleString();
+                        let timeString = o.created_at;
+                        if (timeString && !timeString.endsWith('Z') && !timeString.includes('+')) {
+                            timeString += 'Z';
+                        }
+                        const d = new Date(timeString);
+                        const slotTime = d.toLocaleString('en-IN');
                         
                         let paymentBadge = '';
                         if(o.payment_status === 'PAID') {
@@ -215,13 +219,21 @@
                             paymentBadge = `<span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded">PENDING</span>`;
                         }
 
-                        let actions = '';
+                        let actions = '<div class="flex flex-col gap-2 items-start">';
                         if(currentTab === 'ONGOING') {
-                            actions += `<button onclick="markComplete('${o.order_code}')" class="text-white bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded text-sm font-medium mr-2">Complete</button>`;
+                            actions += `<button onclick="markComplete('${o.order_code}')" class="text-white bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded text-sm font-medium w-full text-left">Complete</button>`;
                             if(o.payment_status !== 'PAID') {
-                                actions += `<button onclick="markPaid('${o.order_code}')" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-medium">Mark Paid</button>`;
+                                actions += `<button onclick="markPaid('${o.order_code}')" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-medium w-full text-left">Mark Paid</button>`;
                             }
                         }
+                        
+                        // Delete Button
+                        actions += `<button onclick="deleteOrder('${o.order_code}')" class="text-gray-600 bg-gray-100 hover:bg-red-600 hover:text-white px-3 py-1 rounded text-sm font-medium w-full text-left flex items-center justify-between transition-colors">
+                            <span>Delete</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>`;
+                        
+                        actions += '</div>';
 
                         let itemsDisplay = '';
                         if (o.items && o.items.length > 0) {
@@ -301,6 +313,27 @@
                     fetchStats();
                 } else {
                     alert("Failed to complete order");
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Network error");
+            }
+        }
+        
+        async function deleteOrder(code) {
+            if(!confirm(`Are you sure you want to completely delete order ${code}?`)) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/orders/${code}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if(res.ok) {
+                    fetchOrders();
+                    fetchStats();
+                } else {
+                    alert("Failed to delete order");
                 }
             } catch(e) {
                 console.error(e);
