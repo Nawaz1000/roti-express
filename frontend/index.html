@@ -323,7 +323,7 @@
                     document.getElementById('cod-amount').innerText = `₹${data.total_amount}`;
 
                     // Setup WA Confirm button with order details
-                    const waNum = "918779672253"; 
+                    const waNum = "919892758500"; 
                     
                     let cartSummary = itemsToOrder.map(i => `${i.quantity}x ${i.name}`).join(', ');
                     let waTextString = `Hi! I'd like to confirm my order *${data.order_code}*.\n\n*Items:* ${cartSummary}\n*Total:* ₹${data.total_amount}\n*Payment Type:* ${payload.payment_method}\n*Address:* ${payload.customer.address}`;
