@@ -9,3 +9,4 @@ PyJWT
 passlib[bcrypt]
 razorpay
 qrcode[pil]
+httpx
