@@ -55,11 +55,11 @@ async def send_whatsapp_message(to_phone: str, template: str, context: dict):
         # We don't raise here so it doesn't break the order flow
         return {"status": "failed", "error": str(e)}
 
-async def notify_order_placed(order_code: str, customer_name: str, phone: str, quantity: int, total_amount: float, payment_method: str, delivery_slot: str, address: str):
+async def notify_order_placed(order_code: str, customer_name: str, phone: str, items_summary: str, total_amount: float, payment_method: str, delivery_slot: str, address: str):
     context_customer = {
         "order_code": order_code,
         "name": customer_name,
-        "quantity": quantity,
+        "items_summary": items_summary,
         "total_amount": total_amount,
         "payment_method": payment_method,
         "delivery_slot": delivery_slot
@@ -70,7 +70,7 @@ async def notify_order_placed(order_code: str, customer_name: str, phone: str, q
         "name": customer_name,
         "phone": phone,
         "address": address,
-        "quantity": quantity,
+        "items_summary": items_summary,
         "total_amount": total_amount,
         "payment_method": payment_method,
         "delivery_slot": delivery_slot

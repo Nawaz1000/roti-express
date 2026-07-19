@@ -110,12 +110,14 @@ async def create_order(order_req: OrderCreate, db=Depends(get_database)):
     # Insert order
     result = await db.orders.insert_one(new_order)
     
+    items_summary = ", ".join([f"{item.quantity}x {item.name}" for item in order_req.items])
+    
     # 4. Notify via WhatsApp
     await notify_order_placed(
         order_code=order_code,
         customer_name=order_req.customer.name,
         phone=order_req.customer.phone,
-        quantity=order_req.quantity,
+        items_summary=items_summary,
         total_amount=total_amount,
         payment_method=order_req.payment_method,
         delivery_slot=order_req.delivery_slot.isoformat() if order_req.delivery_slot else "N/A",
