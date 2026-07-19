@@ -63,7 +63,7 @@ async def mark_order_complete(order_code: str, db=Depends(get_database), admin=D
     result = await db.orders.find_one_and_update(
         {"order_code": order_code},
         {"$set": {
-            "order_status": OrderStatus.COMPLETED,
+            "order_status": OrderStatus.COMPLETED.value,
             "completed_at": datetime.now(timezone.utc)
         }},
         return_document=True
@@ -78,7 +78,7 @@ async def mark_order_paid(order_code: str, db=Depends(get_database), admin=Depen
     result = await db.orders.find_one_and_update(
         {"order_code": order_code},
         {"$set": {
-            "payment_status": PaymentStatus.PAID,
+            "payment_status": PaymentStatus.PAID.value,
             "payment.verified_by": "admin_manual",
             "payment.verified_at": datetime.now(timezone.utc)
         }},
